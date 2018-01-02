@@ -1,2 +1,4 @@
 ﻿[B]*** 1.0.0 ***[/B]
+ fixed some old movies wont play
+ [B]*** 1.0.0 ***[/B]
 - Първа публична версия
