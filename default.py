@@ -80,20 +80,28 @@ def SHOW(url):
        response = urllib2.urlopen(req)
        data=response.read()
        response.close()
+       link =''
        match = re.compile('var _.*"(.+?)"').findall(data)
-       for link in match:
-        enclink = link.decode('unicode_escape').encode('raw_unicode_escape').decode('utf8', 'ignore').encode('utf8', 'ignore')
-        matchi = re.compile('thumbnailUrl" content="(.+?)" />').findall(data)
-        for thumb in matchi:
-         matchd = re.compile('</div><p>(.+?)</p>').findall(data)
-         for desc in matchd:
-        #print link
+       for movie1 in match:
+        print 'the movie is:' + movie1
+        link = movie1
+       match1 = re.compile('var embedCode = .<iframe src="(http.*).*llin').findall(data)
+       for movie2 in match1:
+        link = link + movie2
+       matchi = re.compile('thumbnailUrl" content="(.+?)" />').findall(data)
+       for thumb in matchi:
+        matchd = re.compile('</div><p>(.+?)</p>').findall(data)
+        for desc in matchd:
+         oneortwo = link
+         print oneortwo
+         enclink = oneortwo.decode('unicode_escape').encode('raw_unicode_escape').decode('utf8', 'ignore').encode('utf8', 'ignore')
+         print 'linkat e:' + enclink
+         match0 = re.compile('(http.*)".*scro').findall(enclink)
+         for final in match0:
+          print final
           thumbnail = 'https://filmi2k.com' + thumb
-          match0 = re.compile('<iframe src="(.+?)"').findall(enclink)
-          for enc in match0:
-           addLink2(name,enc,4,desc,thumbnail)
-
-
+          addLink2(name,final,4,desc,thumbnail)
+            
 
 def PLAY(url):
          li = xbmcgui.ListItem(iconImage=iconimage, thumbnailImage=iconimage, path=url)
@@ -133,7 +141,15 @@ def addLink2(name,url,mode,plot,iconimage):
         liz.setProperty("IsPlayable" , "true")
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
         return ok
-
+def addLink3(name,url,mode):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage=iconimage, thumbnailImage=iconimage)
+        liz.setArt({ 'thumb': iconimage,'poster': iconimage, 'banner' : iconimage, 'fanart': iconimage })
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
+        liz.setProperty("IsPlayable" , "true")
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False)
+        return ok
 
 def addDir(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
