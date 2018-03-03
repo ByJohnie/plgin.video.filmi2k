@@ -25,9 +25,9 @@ UA = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40
 def CATEGORIES():
         addDir('Търсене на филм','https://filmi2k.com/?s=',2,searchicon)
         #addDir('Сериали','https://filmi2k.com/seriali-onlayn/',2, 'https://filmi2k.com/wp-content/uploads/2017/08/movies.png')
-        addDir('Последно добавени','https://filmi2k.com/?filter=date&cat=0',5,'ttps://filmi2k.com/wp-content/uploads/2017/08/movies.png')
-        addDir('Най-харесвани','https://filmi2k.com/?filter=rate&cat=0',6,'ttps://filmi2k.com/wp-content/uploads/2017/08/movies.png')
-        addDir('Най-гледани','https://filmi2k.com/?filter=views&cat=0',7,'ttps://filmi2k.com/wp-content/uploads/2017/08/movies.png')
+        addDir('Последно добавени','https://filmi2k.com/?filter=date&cat=0',5,'https://filmi2k.com/wp-content/uploads/2017/08/movies.png')
+        addDir('Най-харесвани','https://filmi2k.com/?filter=rate&cat=0',6,'https://filmi2k.com/wp-content/uploads/2017/08/movies.png')
+        addDir('Най-гледани','https://filmi2k.com/?filter=views&cat=0',7,'https://filmi2k.com/wp-content/uploads/2017/08/movies.png')
         baseurl = 'https://filmi2k.com/'
         req = urllib2.Request(baseurl)
         req.add_header('User-Agent', UA)
