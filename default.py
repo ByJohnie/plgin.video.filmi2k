@@ -8,10 +8,14 @@ import urllib2
 import xbmc, xbmcplugin,xbmcgui,xbmcaddon
 import urlresolver
 import unicodedata
+import time
+import json
 
 __addon_id__= 'plugin.video.filmi2k'
 __Addon = xbmcaddon.Addon(__addon_id__)
 searchicon = xbmc.translatePath(__Addon.getAddonInfo('path') + "/resources/search.png")
+__icon__ =  xbmc.translatePath(__Addon.getAddonInfo('path') + "/resources/icon.png")
+
 
 MUA = 'Mozilla/5.0 (Linux; Android 5.0.2; bg-bg; SAMSUNG GT-I9195 Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Version/1.0 Chrome/18.0.1025.308 Mobile Safari/535.19' #За симулиране на заявка от мобилно устройство
 UA = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0' #За симулиране на заявка от  компютърен браузър
@@ -21,7 +25,9 @@ UA = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40
 def CATEGORIES():
         addDir('Търсене на филм','https://filmi2k.com/?s=',2,searchicon)
         #addDir('Сериали','https://filmi2k.com/seriali-onlayn/',2, 'https://filmi2k.com/wp-content/uploads/2017/08/movies.png')
-        #addDir('Всички филми','https://filmi2k.com/?filter=date&cat=0',1,'DefaultVideo.png')
+        addDir('Последно добавени','https://filmi2k.com/?filter=date&cat=0',5,'ttps://filmi2k.com/wp-content/uploads/2017/08/movies.png')
+        addDir('Най-харесвани','https://filmi2k.com/?filter=rate&cat=0',6,'ttps://filmi2k.com/wp-content/uploads/2017/08/movies.png')
+        addDir('Най-гледани','https://filmi2k.com/?filter=views&cat=0',7,'ttps://filmi2k.com/wp-content/uploads/2017/08/movies.png')
         baseurl = 'https://filmi2k.com/'
         req = urllib2.Request(baseurl)
         req.add_header('User-Agent', UA)
@@ -83,7 +89,6 @@ def SHOW(url):
        link =''
        match = re.compile('var _.*"(.+?)"').findall(data)
        for movie1 in match:
-        print 'the movie is:' + movie1
         link = movie1
        match1 = re.compile('var embedCode = .<iframe src="(http.*).*llin').findall(data)
        for movie2 in match1:
@@ -93,14 +98,15 @@ def SHOW(url):
         matchd = re.compile('</div><p>(.+?)</p>').findall(data)
         for desc in matchd:
          oneortwo = link
-         print oneortwo
          enclink = oneortwo.decode('unicode_escape').encode('raw_unicode_escape').decode('utf8', 'ignore').encode('utf8', 'ignore')
-         print 'linkat e:' + enclink
          match0 = re.compile('(http.*)".*scro').findall(enclink)
          for final in match0:
-          print final
+          print 'finalen link' + final
           thumbnail = 'https://filmi2k.com' + thumb
-          addLink2(name,final,4,desc,thumbnail)
+          if 'openload' in final:
+           addLink2(name,final,8,desc,thumbnail)
+          if not 'openload' in final:
+           addLink2(name,final,4,desc,thumbnail)
             
 
 def PLAY(url):
@@ -121,6 +127,97 @@ def PLAY(url):
          except: t=''
          try: _addon.resolve_url(stream_url)
          except: t=''
+
+def INDEXNEW(url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', MUA)
+        response = urllib2.urlopen(req)
+        data=response.read()
+        response.close()
+        br = 0 
+        match = re.compile('<a href="(.+?)" rel="bookmark" title="(.+?)">\n.*\n.*\n.*\n.*\n.*src="(.+?)"').findall(data)
+        for vid,title,thumb in match:
+         thumbnail = 'https://filmi2k.com/' + thumb
+         addLink(title,vid,3,thumbnail)
+         br = br + 1
+        if br == 25:
+         matchp = re.compile('a class="current">(.+?)</a></li><li><a href=.(.+?)/page/\d+/(.+?). class').findall(data)
+         for pagenumb,baseurl,backurl in matchp:
+             page = int(pagenumb)
+             currentDisplayCounter = page + 1
+             url = baseurl + '/page/' + str(currentDisplayCounter) + backurl
+             thumbnail='DefaultFolder.png'
+             addDir('следваща страница>>'+str(currentDisplayCounter),url,5,thumbnail)
+
+def INDEXRATED(url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', MUA)
+        response = urllib2.urlopen(req)
+        data=response.read()
+        response.close()
+        br = 0 
+        match = re.compile('<a href="(.+?)" rel="bookmark" title="(.+?)">\n.*\n.*\n.*\n.*\n.*src="(.+?)"').findall(data)
+        for vid,title,thumb in match:
+         thumbnail = 'https://filmi2k.com/' + thumb
+         addLink(title,vid,3,thumbnail)
+         br = br + 1
+        if br == 25:
+         matchp = re.compile('a class="current">(.+?)</a></li><li><a href=.(.+?)/page/\d+/(.+?). class').findall(data)
+         for pagenumb,baseurl,backurl in matchp:
+             page = int(pagenumb)
+             currentDisplayCounter = page + 1
+             url = baseurl + '/page/' + str(currentDisplayCounter) + backurl
+             thumbnail='DefaultFolder.png'
+             addDir('следваща страница>>'+str(currentDisplayCounter),url,6,thumbnail)
+
+def INDEXVIEWS(url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', MUA)
+        response = urllib2.urlopen(req)
+        data=response.read()
+        response.close()
+        br = 0 
+        match = re.compile('<a href="(.+?)" rel="bookmark" title="(.+?)">\n.*\n.*\n.*\n.*\n.*src="(.+?)"').findall(data)
+        for vid,title,thumb in match:
+         thumbnail = 'https://filmi2k.com/' + thumb
+         addLink(title,vid,3,thumbnail)
+         br = br + 1
+        if br == 25:
+         matchp = re.compile('a class="current">(.+?)</a></li><li><a href=.(.+?)/page/\d+/(.+?). class').findall(data)
+         for pagenumb,baseurl,backurl in matchp:
+             page = int(pagenumb)
+             currentDisplayCounter = page + 1
+             url = baseurl + '/page/' + str(currentDisplayCounter) + backurl
+             thumbnail='DefaultFolder.png'
+             addDir('следваща страница>>'+str(currentDisplayCounter),url,7,thumbnail)
+
+def PLAYOL(url):
+        match = re.compile('https.+?embed/(.+?)/').findall(url)
+        for  link in match:
+         link = 'https://api.openload.co/1/streaming/get?file=' + link
+         req = urllib2.Request(link)
+         req.add_header('User-Agent', UA)
+         response = urllib2.urlopen(req)
+         #print 'request page url:' + url
+         data=response.read()
+         response.close()
+         #print data
+         jsonrsp = json.loads(data)
+         status = jsonrsp['status']
+         msg = jsonrsp['msg']
+         if status == 404:
+          xbmc.executebuiltin((u'Notification(%s,%s,%s,%s)' % (status, msg, '5000', __icon__)).encode('utf-8'))
+         if status == 403:
+          xbmc.executebuiltin((u'Notification(%s,%s,%s,%s)' % (status, msg, '5000', __icon__)).encode('utf-8'))
+         if status == 200:
+          path = jsonrsp['result']['url'].replace('?mime=true','')
+          li = xbmcgui.ListItem(iconImage=iconimage, thumbnailImage=iconimage, path=path)
+          li.setInfo('video', { 'title': name })
+          xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=li)
+          try:
+           xbmc.Player().play(path, li)
+          except:
+           xbmc.executebuiltin("Notification('Грешка','Видеото липсва на сървъра!')")
 
 def addLink(name,url,mode,iconimage):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
@@ -227,5 +324,21 @@ elif mode==3:
 elif mode==4:
         print ""+url
         PLAY(url)
+
+elif mode==5:
+        print ""+url
+        INDEXNEW(url)
+
+elif mode==6:
+        print ""+url
+        INDEXRATED(url)
+
+elif mode==7:
+        print ""+url
+        INDEXVIEWS(url)
+
+elif mode==8:
+        print ""+url
+        PLAYOL(url)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
