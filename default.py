@@ -35,7 +35,7 @@ def CATEGORIES():
         data=response.read()
         response.close()
         cr = 0
-        match = re.compile('li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-.*"><a title=".+?" href="(.+?)">(.+?)</a>').findall(data)
+        match = re.compile('li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-.+?"><a title=".+?" href="(.+?)">(.+?)</a>').findall(data)
         for link, title in match:
          thumbnail = 'https://filmi2k.com/wp-content/uploads/2017/08/movies.png'
          addDir(title,link,1,thumbnail)
