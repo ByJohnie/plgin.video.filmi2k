@@ -87,7 +87,7 @@ def SHOW(url):
        data=response.read()
        response.close()
        link =''
-       match = re.compile('var _.*"(.+?)"').findall(data)
+       match = re.compile('var _.+?"(.+?)"').findall(data)
        for movie1 in match:
         link = movie1
        match1 = re.compile('var embedCode = .<iframe src="(http.*).*llin').findall(data)
@@ -103,9 +103,9 @@ def SHOW(url):
          for final in match0:
           print 'finalen link' + final
           thumbnail = 'https://filmi2k.com' + thumb
-          if 'openload' in final:
+          if 'load' in final:
            addLink2(name,final,8,desc,thumbnail)
-          if not 'openload' in final:
+          if not 'load' in final:
            addLink2(name,final,4,desc,thumbnail)
             
 
