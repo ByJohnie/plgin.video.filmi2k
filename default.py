@@ -35,7 +35,7 @@ def CATEGORIES():
         data=response.read()
         response.close()
         cr = 0
-        match = re.compile('li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-.+?"><a title=".+?" href="(.+?)">(.+?)</a>').findall(data)
+        match = re.compile('class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-.+?"><a title=".+?" href="(.+?)">(.+?)</a>').findall(data)
         for link, title in match:
          thumbnail = 'https://filmi2k.com/wp-content/uploads/2017/08/movies.png'
          addDir(title,link,1,thumbnail)
@@ -48,12 +48,12 @@ def INDEXPAGES(url):
         data=response.read()
         response.close()
         br = 0 
-        match = re.compile('<a href="(.+?)" rel="bookmark" title="(.+?)">\n.*\n.*\n.*\n.*\n.*src="(.+?)"').findall(data)
+        match = re.compile('<a href="(.+?)" title="(.+?)">\n.*\n.+?src="(.+?)"').findall(data)
         for vid,title,thumb in match:
          thumbnail = 'https://filmi2k.com/' + thumb
          addLink(title,vid,3,thumbnail)
          br = br + 1
-        if br == 25:
+        if br >= 20:
          matchp = re.compile('<a class="current">(.+?)</a></li><li><a href=.(.+?)/page/').findall(data)
          for pagenumb,baseurl in matchp:
              print pagenumb
@@ -135,12 +135,12 @@ def INDEXNEW(url):
         data=response.read()
         response.close()
         br = 0 
-        match = re.compile('<a href="(.+?)" rel="bookmark" title="(.+?)">\n.*\n.*\n.*\n.*\n.*src="(.+?)"').findall(data)
+        match = re.compile('<a href="(.+?)" title="(.+?)">\n.*\n.+?src="(.+?)"').findall(data)
         for vid,title,thumb in match:
          thumbnail = 'https://filmi2k.com/' + thumb
          addLink(title,vid,3,thumbnail)
          br = br + 1
-        if br == 25:
+        if br >= 20:
          matchp = re.compile('a class="current">(.+?)</a></li><li><a href=.(.+?)/page/\d+/(.+?). class').findall(data)
          for pagenumb,baseurl,backurl in matchp:
              page = int(pagenumb)
@@ -156,12 +156,12 @@ def INDEXRATED(url):
         data=response.read()
         response.close()
         br = 0 
-        match = re.compile('<a href="(.+?)" rel="bookmark" title="(.+?)">\n.*\n.*\n.*\n.*\n.*src="(.+?)"').findall(data)
+        match = re.compile('<a href="(.+?)" title="(.+?)">\n.*\n.+?src="(.+?)"').findall(data)
         for vid,title,thumb in match:
          thumbnail = 'https://filmi2k.com/' + thumb
          addLink(title,vid,3,thumbnail)
          br = br + 1
-        if br == 25:
+        if br >= 20:
          matchp = re.compile('a class="current">(.+?)</a></li><li><a href=.(.+?)/page/\d+/(.+?). class').findall(data)
          for pagenumb,baseurl,backurl in matchp:
              page = int(pagenumb)
@@ -177,12 +177,12 @@ def INDEXVIEWS(url):
         data=response.read()
         response.close()
         br = 0 
-        match = re.compile('<a href="(.+?)" rel="bookmark" title="(.+?)">\n.*\n.*\n.*\n.*\n.*src="(.+?)"').findall(data)
+        match = re.compile('<a href="(.+?)" title="(.+?)">\n.*\n.+?src="(.+?)"').findall(data)
         for vid,title,thumb in match:
          thumbnail = 'https://filmi2k.com/' + thumb
          addLink(title,vid,3,thumbnail)
          br = br + 1
-        if br == 25:
+        if br >= 20:
          matchp = re.compile('a class="current">(.+?)</a></li><li><a href=.(.+?)/page/\d+/(.+?). class').findall(data)
          for pagenumb,baseurl,backurl in matchp:
              page = int(pagenumb)
